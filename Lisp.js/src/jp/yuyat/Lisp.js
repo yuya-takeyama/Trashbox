@@ -5,33 +5,25 @@ jp.yuyat.Lisp = (function () {
   var Env, tokenize, read_from_tokens, parse, atom;
 
   Env = function (outer, vars, args) {
-    this.vars  = vars || {};
-    this.args  = args || [];
-    this.outer = outer;
+    for (var key in vars) {
+      this[key] = vars[key];
+    }
+    this.__args__  = args || [];
+    this.__outer__ = outer;
   };
 
   Env.prototype = (function () {
-    var set, get, find;
-
-    set = function (key, value) {
-      this.vars[key] = value;
-    };
-
-    get = function (key) {
-      return this.vars[key];
-    };
+    var find;
 
     find = function (key) {
-      if (key in this.vars) {
+      if (key in this && !key.match(/^__/)) {
         return this;
       } else {
-        return this.outer.find(key);
+        return this.__outer__.find(key);
       }
     };
 
     return {
-      set  : set,
-      get  : get,
       find : find
     };
   })();
@@ -78,11 +70,11 @@ jp.yuyat.Lisp = (function () {
     }
 
     if (typeof x === 'string') {
-      return env.find(x).get(x)
+      return env.find(x)[x];
     } else if (!(x instanceof Array)) {
       return x;
     } else if (x[0] === 'define') {
-      env.set(x[1], x[2]);
+      env[x[1]] = x[2];
     } else if (x[0] === 'lambda') {
       return function () {
         eval(x[2], new Lisp.Env(x[1], arguments, env));

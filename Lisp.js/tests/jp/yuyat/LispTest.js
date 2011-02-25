@@ -24,27 +24,27 @@ testcase.test('Lisp.parse', function (a) {
 
 testcase.test('Lisp.Env', function (a) {
   var env = new Lisp.Env;
-  env.set('name', 'Yuya Takeyama');
-  env.set('age',  23);
+  env['name'] = 'Yuya Takeyama';
+  env['age']  = 23;
 
-  a.equals('Yuya Takeyama', env.get('name'));
-  a.equals(23,              env.get('age'));
+  a.equals('Yuya Takeyama', env['name']);
+  a.equals(23,              env['age']);
 });
 
 testcase.test('Lisp.Env.find', function (a) {
   var outer_env = new Lisp.Env;
   var inner_env = new Lisp.Env(outer_env);
-  outer_env.set('foo', 'bar');
+  outer_env['foo'] = 'bar';
 
   a.equals(outer_env, inner_env.find('foo'));
-  a.equals('bar',     inner_env.find('foo').get('foo'));
+  a.equals('bar',     inner_env.find('foo')['foo']);
 });
 
 testcase.test('(define var exp)', function (a) {
   var env = new Lisp.Env;
   Lisp.eval(Lisp.parse('(define foo bar)'), env);
 
-  a.equals('bar', env.get('foo'));
+  a.equals('bar', env['foo']);
 });
 
 testcase.run();
