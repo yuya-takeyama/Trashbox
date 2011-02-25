@@ -8,6 +8,22 @@ jp.yuyat.Test.Unit.TestCase = function () {
   this.tests = [];
 };
 
+jp.yuyat.Test.Unit.Result = function (params) {
+  this.tests_count = params.tests_count;
+};
+
+jp.yuyat.Test.Unit.Result.prototype = (function () {
+  var display;
+
+  display = function () {
+    print(this.tests_count + ' tests.');
+  };
+
+  return {
+    display : display
+  };
+})();
+
 jp.yuyat.Test.Unit.Assersions = (function () {
   var equals, length, is_null;
 
@@ -62,6 +78,9 @@ jp.yuyat.Test.Unit.TestCase.prototype = (function () {
         print('NG... ' + test.comment);
       }
     }
+    return new jp.yuyat.Test.Unit.Result({
+      tests_count : this.tests.length
+    });
   };
 
   return {

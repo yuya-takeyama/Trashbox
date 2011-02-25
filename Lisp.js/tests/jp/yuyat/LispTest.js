@@ -61,4 +61,5 @@ testcase.test('(begin (exp) (exp))', function (a) {
   a.equals('fuga', env['hoge']);
 });
 
-testcase.run();
+var result = testcase.run();
+result.display();
