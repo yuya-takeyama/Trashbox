@@ -9,7 +9,7 @@ jp.yuyat.Test.Unit.TestCase = function () {
 };
 
 jp.yuyat.Test.Unit.Assersions = (function () {
-  var equals;
+  var equals, length, is_null;
 
   equals = function (expected, actual) {
     if (expected instanceof Array) {
@@ -29,9 +29,16 @@ jp.yuyat.Test.Unit.Assersions = (function () {
     }
   };
 
+  is_null = function (subject) {
+    if (subject !== null) {
+      throw new Error;
+    }
+  };
+
   return {
-    equals : equals,
-    length : length
+    equals  : equals,
+    length  : length,
+    is_null : is_null
   };
 })();
 

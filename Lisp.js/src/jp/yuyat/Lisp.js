@@ -16,7 +16,10 @@ jp.yuyat.Lisp = (function () {
     var find;
 
     find = function (key) {
-      if (key in this && !key.match(/^__/)) {
+      if (key.match(/^__/)) {
+        return null;
+      }
+      if (key in this) {
         return this;
       } else {
         return this.__outer__.find(key);
