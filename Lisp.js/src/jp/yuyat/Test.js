@@ -9,14 +9,15 @@ jp.yuyat.Test.Unit.TestCase = function () {
 };
 
 jp.yuyat.Test.Unit.Result = function (params) {
-  this.tests_count = params.tests_count;
+  this.tests_count      = params.tests_count;
+  this.assertions_count = params.assertions_count;
 };
 
 jp.yuyat.Test.Unit.Result.prototype = (function () {
   var display;
 
   display = function () {
-    print(this.tests_count + ' tests.');
+    print(this.tests_count + ' tests. ' + this.assertions_count + ' assertions.');
   };
 
   return {
@@ -24,13 +25,18 @@ jp.yuyat.Test.Unit.Result.prototype = (function () {
   };
 })();
 
-jp.yuyat.Test.Unit.Assersions = (function () {
-  var equals, length, is_null;
+jp.yuyat.Test.Unit.Assertion = function () {
+  this.assertions_count = 0;
+  this.failures_count   = 0;
+};
 
-  equals = function (expected, actual) {
+jp.yuyat.Test.Unit.Assertion.prototype = (function () {
+  var equals, _equals, length, is_null, count_up;
+
+  _equals = function (expected, actual) {
     if (expected instanceof Array) {
       for (var key in expected) {
-        equals(expected[key], actual[key]);
+        _equals(expected[key], actual[key]);
       }
     } else {
       if (expected !== actual) {
@@ -39,13 +45,20 @@ jp.yuyat.Test.Unit.Assersions = (function () {
     }
   };
 
+  equals = function (expected, actual) {
+    this.assertions_count++;
+    _equals(expected, actual);
+  };
+
   length = function (expected, subject) {
+    this.assertions_count++;
     if (expected !== subject.length) {
       throw new Error;
     }
   };
 
   is_null = function (subject) {
+    this.assertions_count++;
     if (subject !== null) {
       throw new Error;
     }
@@ -69,17 +82,19 @@ jp.yuyat.Test.Unit.TestCase.prototype = (function () {
   };
 
   run = function () {
+    var assertion = new jp.yuyat.Test.Unit.Assertion;
     for (var key in this.tests) {
-      var test = this.tests[key];
+      var test      = this.tests[key];
       try {
-        test.test(jp.yuyat.Test.Unit.Assersions);
+        test.test(assertion);
         print('OK... ' + test.comment);
       } catch (e) {
         print('NG... ' + test.comment);
       }
     }
     return new jp.yuyat.Test.Unit.Result({
-      tests_count : this.tests.length
+      tests_count      : this.tests.length,
+      assertions_count : assertion.assertions_count
     });
   };
 
