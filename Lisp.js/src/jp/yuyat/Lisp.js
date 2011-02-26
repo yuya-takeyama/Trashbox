@@ -145,5 +145,3 @@ jp.yuyat.Lisp = (function () {
     eval             : eval
   };
 })();
-
-print(jp.yuyat.Lisp);
