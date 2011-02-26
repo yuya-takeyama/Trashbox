@@ -61,11 +61,18 @@ testcase.test('Lisp.eval begin', function (a) {
   a.equals(72, env['hoge']);
 });
 
-testcase.test('lambda definition', function (a) {
+testcase.test('lambda execution', function (a) {
   var env = new Lisp.Env;
-  env['+'] = function (args) { return args[0] + args[1]; };
+  env['+'] = function () { return arguments[0] + arguments[1]; };
 
   a.equals(3, Lisp.eval(['+', 1, 2], env));
+});
+
+testcase.test('nested lambda execution', function (a) {
+  var env = new Lisp.Env;
+  env['+'] = function () { return arguments[0] + arguments[1]; };
+
+  a.equals(6, Lisp.eval(['+', 1, ['+', 2, 3]], env));
 });
 
 var result = testcase.run();

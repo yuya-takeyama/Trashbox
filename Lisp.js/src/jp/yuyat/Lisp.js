@@ -89,13 +89,12 @@ jp.yuyat.Lisp = (function () {
       }
       return value;
     } else {
-      // @XXX nested lambda is unavalilable.
       var exps = [];
       for (var i in x) {
-        exps[i] = x[i];
+        exps[i] = eval(x[i], env);
       }
       proc = exps.shift();
-      return env.find(proc)[proc](exps);
+      return proc.apply(null, exps);
     }
   }
 
