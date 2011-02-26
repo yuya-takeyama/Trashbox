@@ -55,10 +55,12 @@ testcase.test('Lisp.eval define', function (a) {
 
 testcase.test('Lisp.eval begin', function (a) {
   var env = new Lisp.Env;
-  Lisp.eval(['begin', ['define', 'foo', 66], ['define', 'hoge', 72]], env);
+  env['*'] = function () { return arguments[0] * arguments[1]; };
+  var result = Lisp.eval(['begin', ['define', 'foo', 3], ['define', 'hoge', 9], ['*', 'foo', 'hoge']], env);
 
-  a.equals(66, env['foo']);
-  a.equals(72, env['hoge']);
+  a.equals(3,  env['foo']);
+  a.equals(9,  env['hoge']);
+  a.equals(27, result);
 });
 
 testcase.test('lambda execution', function (a) {
