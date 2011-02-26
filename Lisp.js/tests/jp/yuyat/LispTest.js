@@ -111,5 +111,9 @@ testcase.test('Lisp.eval cdr', function (a) {
   a.equals([3, 5, 7, 9], Lisp.eval(Lisp.parse('(cdr 1 3 5 7 9)')));
 });
 
+testcase.test('Lisp.eval list', function (a) {
+  a.equals([1, 3, 5, 7, 9], Lisp.eval(Lisp.parse('(list 1 3 5 7 9)')));
+});
+
 var result = testcase.run();
 result.display();

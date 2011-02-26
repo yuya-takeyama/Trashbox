@@ -136,6 +136,7 @@ jp.yuyat.Lisp = (function () {
     'length' : function () { return arguments[0].length; },
     'car' : function () { return arguments[0]; },
     'cdr' : function () { return Array.prototype.slice.apply(arguments, [1]); },
+    'list' : function () { return Array.prototype.slice.apply(arguments, [0]); },
   };
 
   return {
