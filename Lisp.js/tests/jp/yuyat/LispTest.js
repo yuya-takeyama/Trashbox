@@ -48,17 +48,17 @@ testcase.test('Lisp.Env.find should returns null if the key starts with "__".', 
 
 testcase.test('Lisp.eval define', function (a) {
   var env = new Lisp.Env;
-  Lisp.eval(['define', 'foo', 'bar'], env);
+  Lisp.eval(['define', 'foo', 42], env);
 
-  a.equals('bar', env['foo']);
+  a.equals(42, env['foo']);
 });
 
 testcase.test('Lisp.eval begin', function (a) {
   var env = new Lisp.Env;
-  Lisp.eval(['begin', ['define', 'foo', 'bar'], ['define', 'hoge', 'fuga']], env);
+  Lisp.eval(['begin', ['define', 'foo', 66], ['define', 'hoge', 72]], env);
 
-  a.equals('bar',  env['foo']);
-  a.equals('fuga', env['hoge']);
+  a.equals(66, env['foo']);
+  a.equals(72, env['hoge']);
 });
 
 var result = testcase.run();

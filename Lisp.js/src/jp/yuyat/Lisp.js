@@ -77,7 +77,7 @@ jp.yuyat.Lisp = (function () {
     } else if (!(x instanceof Array)) {
       return x;
     } else if (x[0] === 'define') {
-      env[x[1]] = x[2];
+      env[x[1]] = eval(x[2], env);
     } else if (x[0] === 'lambda') {
       return function () {
         eval(x[2], new Lisp.Env(x[1], arguments, env));
