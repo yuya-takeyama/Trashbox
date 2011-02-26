@@ -5,10 +5,10 @@ jp.yuyat.Lisp = (function () {
   var Env, Lib, tokenize, read_from_tokens, parse, atom;
 
   Env = function (outer, vars, args) {
-    for (var key in vars) {
-      this[key] = vars[key];
+    var vars = vars || [];
+    for (var i in vars) {
+      this[vars[i]] = args[i];
     }
-    this.__args__  = args || [];
     this.__outer__ = outer;
   };
 
@@ -76,7 +76,7 @@ jp.yuyat.Lisp = (function () {
 
   eval = function (x, env) {
     if (typeof env === 'undefined') {
-      env = global;
+      env = this.global;
     }
 
     if (typeof x === 'string') {
@@ -94,8 +94,10 @@ jp.yuyat.Lisp = (function () {
     } else if (x[0] === 'define') {
       env[x[1]] = eval(x[2], env);
     } else if (x[0] === 'lambda') {
+      var vars = x[1],
+          exp  = x[2];
       return function () {
-        eval(x[2], new Lisp.Env(x[1], arguments, env));
+        return eval(exp, new jp.yuyat.Lisp.Env(env, vars, arguments));
       };
     } else if (x[0] === 'begin') {
       x.shift();
@@ -136,7 +138,6 @@ jp.yuyat.Lisp = (function () {
 
   return {
     Env              : Env,
-    global           : new Env,
     Lib              : Lib,
     tokenize         : tokenize,
     read_from_tokens : read_from_tokens,
@@ -145,3 +146,6 @@ jp.yuyat.Lisp = (function () {
     eval             : eval
   };
 })();
+
+jp.yuyat.Lisp.global = new jp.yuyat.Lisp.Env;
+jp.yuyat.Lisp.global.__import__(jp.yuyat.Lisp.Lib);

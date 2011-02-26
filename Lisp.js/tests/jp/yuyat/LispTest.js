@@ -97,5 +97,12 @@ testcase.test('Lisp.Env.__import__', function (a) {
   a.equals(-6, Lisp.eval(['+', 1, ['-', 9, ['*', 2, 8]]], env));
 })
 
+testcase.test('Lisp.eval lambda', function (a) {
+  var env = Lisp.global;
+  Lisp.eval(Lisp.parse('(define mul (lambda (a b) (* a b)))'), env);
+
+  a.equals(12, Lisp.eval(['mul', 3, 4], env));
+});
+
 var result = testcase.run();
 result.display();
