@@ -83,5 +83,12 @@ testcase.test('Lisp.eval if list', function (a) {
   a.equals(3, Lisp.eval(['if', 0, 2, 3], env));
 });
 
+testcase.test('Lisp.eval quote', function (a) {
+  var env = new Lisp.Env;
+  var result = Lisp.eval(['quote', 2, 3, 5, 7, 11], env);
+
+  a.equals([2, 3, 5, 7, 11], result);
+});
+
 var result = testcase.run();
 result.display();

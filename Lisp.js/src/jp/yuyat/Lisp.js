@@ -76,6 +76,9 @@ jp.yuyat.Lisp = (function () {
       return env.__find__(x)[x];
     } else if (!(x instanceof Array)) {
       return x;
+    } else if (x[0] === 'quote') {
+      x.shift();
+      return x;
     } else if (x[0] === 'if') {
       var test   = x[1],
           conseq = x[2],
