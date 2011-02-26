@@ -61,5 +61,12 @@ testcase.test('Lisp.eval begin', function (a) {
   a.equals(72, env['hoge']);
 });
 
+testcase.test('lambda definition', function (a) {
+  var env = new Lisp.Env;
+  env['+'] = function (args) { return args[0] + args[1]; };
+
+  a.equals(3, Lisp.eval(['+', 1, 2], env));
+});
+
 var result = testcase.run();
 result.display();
