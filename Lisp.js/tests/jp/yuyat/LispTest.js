@@ -90,5 +90,12 @@ testcase.test('Lisp.eval quote', function (a) {
   a.equals([2, 3, 5, 7, 11], result);
 });
 
+testcase.test('Lisp.Env.__import__', function (a) {
+  var env = new Lisp.Env;
+  env.__import__(Lisp.Lib);
+
+  a.equals(-6, Lisp.eval(['+', 1, ['-', 9, ['*', 2, 8]]], env));
+})
+
 var result = testcase.run();
 result.display();

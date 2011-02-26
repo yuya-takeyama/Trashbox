@@ -2,7 +2,7 @@ var jp = jp || {};
 jp.yuyat = jp.yuyat || {};
 
 jp.yuyat.Lisp = (function () {
-  var Env, tokenize, read_from_tokens, parse, atom;
+  var Env, Lib, tokenize, read_from_tokens, parse, atom;
 
   Env = function (outer, vars, args) {
     for (var key in vars) {
@@ -13,7 +13,7 @@ jp.yuyat.Lisp = (function () {
   };
 
   Env.prototype = (function () {
-    var __find__;
+    var __find__, __import__;
 
     __find__ = function (key) {
       if (key.match(/^__/)) {
@@ -26,8 +26,15 @@ jp.yuyat.Lisp = (function () {
       }
     };
 
+    __import__ = function (pkg) {
+      for (var name in pkg) {
+        this[name] = pkg[name];
+      }
+    };
+
     return {
-      __find__ : __find__
+      __find__ : __find__,
+      __import__ : __import__
     };
   })();
 
@@ -104,11 +111,33 @@ jp.yuyat.Lisp = (function () {
       proc = exps.shift();
       return proc.apply(null, exps);
     }
-  }
+  };
+
+  Lib = {
+    '+' : function () { return arguments[0] + arguments[1]; },
+    '-' : function () { return arguments[0] - arguments[1]; },
+    '*' : function () {
+      var result = 1, i;
+      for (i = 0; i < arguments.length; i++) {
+        result *= arguments[i];
+      }
+      return result;
+    },
+    '/' : function () { return arguments[0] / arguments[1]; },
+    '%' : function () { return arguments[0] % arguments[1]; },
+    '>' : function () { return arguments[0] > arguments[1]; },
+    '<' : function () { return arguments[0] < arguments[1]; },
+    '>=' : function () { return arguments[0] >= arguments[1]; },
+    '<=' : function () { return arguments[0] <= arguments[1]; },
+    '=' : function () { return arguments[0] === arguments[1]; },
+    'equal?' : function () { return arguments[0] === arguments[1]; },
+    'length' : function () { return arguments[0].length; }
+  };
 
   return {
     Env              : Env,
     global           : new Env,
+    Lib              : Lib,
     tokenize         : tokenize,
     read_from_tokens : read_from_tokens,
     parse            : parse,
@@ -116,3 +145,5 @@ jp.yuyat.Lisp = (function () {
     eval             : eval
   };
 })();
+
+print(jp.yuyat.Lisp);
