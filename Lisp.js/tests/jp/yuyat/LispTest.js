@@ -75,5 +75,11 @@ testcase.test('nested lambda execution', function (a) {
   a.equals(6, Lisp.eval(['+', 1, ['+', 2, 3]], env));
 });
 
+testcase.test('Lisp.eval if list', function (a) {
+  var env = new Lisp.Env;
+  a.equals(2, Lisp.eval(['if', 1, 2, 3], env));
+  a.equals(3, Lisp.eval(['if', 0, 2, 3], env));
+});
+
 var result = testcase.run();
 result.display();

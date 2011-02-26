@@ -76,6 +76,11 @@ jp.yuyat.Lisp = (function () {
       return env.find(x)[x];
     } else if (!(x instanceof Array)) {
       return x;
+    } else if (x[0] === 'if') {
+      var test   = x[1],
+          conseq = x[2],
+          alt    = x[3];
+      return eval(test ? conseq : alt, env);
     } else if (x[0] === 'define') {
       env[x[1]] = eval(x[2], env);
     } else if (x[0] === 'lambda') {
