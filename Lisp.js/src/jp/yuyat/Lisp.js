@@ -90,7 +90,7 @@ jp.yuyat.Lisp = (function () {
       var test   = x[1],
           conseq = x[2],
           alt    = x[3];
-      return eval(test ? conseq : alt, env);
+      return eval(eval(test, env) ? conseq : alt, env);
     } else if (x[0] === 'define') {
       env[x[1]] = eval(x[2], env);
     } else if (x[0] === 'lambda') {
