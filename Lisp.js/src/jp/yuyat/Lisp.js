@@ -133,7 +133,9 @@ jp.yuyat.Lisp = (function () {
     '<=' : function () { return arguments[0] <= arguments[1]; },
     '=' : function () { return arguments[0] === arguments[1]; },
     'equal?' : function () { return arguments[0] === arguments[1]; },
-    'length' : function () { return arguments[0].length; }
+    'length' : function () { return arguments[0].length; },
+    'car' : function () { return arguments[0]; },
+    'cdr' : function () { return Array.prototype.slice.apply(arguments, [1]); },
   };
 
   return {
