@@ -89,6 +89,7 @@ jp.yuyat.Test.Unit.TestCase.prototype = (function () {
         test.test(assertion);
         print('OK... ' + test.comment);
       } catch (e) {
+        print('Error: ' + e.name + ': ' + e.message);
         print('NG... ' + test.comment);
       }
     }
