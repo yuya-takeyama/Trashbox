@@ -31,19 +31,19 @@ testcase.test('Lisp.Env', function (a) {
   a.equals(23,              env['age']);
 });
 
-testcase.test('Lisp.Env.find', function (a) {
+testcase.test('Lisp.Env.__find__', function (a) {
   var outer_env = new Lisp.Env;
   var inner_env = new Lisp.Env(outer_env);
   outer_env['foo'] = 'bar';
 
-  a.equals(outer_env, inner_env.find('foo'));
-  a.equals('bar',     inner_env.find('foo')['foo']);
+  a.equals(outer_env, inner_env.__find__('foo'));
+  a.equals('bar',     inner_env.__find__('foo')['foo']);
 });
 
-testcase.test('Lisp.Env.find should returns null if the key starts with "__".', function (a) {
+testcase.test('Lisp.Env.__find__ should returns null if the key starts with "__".', function (a) {
   var env = new Lisp.Env;
 
-  a.is_null(env.find('__outer__'));
+  a.is_null(env.__find__('__outer__'));
 });
 
 testcase.test('Lisp.eval define', function (a) {

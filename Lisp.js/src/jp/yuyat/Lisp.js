@@ -13,21 +13,21 @@ jp.yuyat.Lisp = (function () {
   };
 
   Env.prototype = (function () {
-    var find;
+    var __find__;
 
-    find = function (key) {
+    __find__ = function (key) {
       if (key.match(/^__/)) {
         return null;
       }
       if (key in this) {
         return this;
       } else {
-        return this.__outer__.find(key);
+        return this.__outer__.__find__(key);
       }
     };
 
     return {
-      find : find
+      __find__ : __find__
     };
   })();
 
@@ -73,7 +73,7 @@ jp.yuyat.Lisp = (function () {
     }
 
     if (typeof x === 'string') {
-      return env.find(x)[x];
+      return env.__find__(x)[x];
     } else if (!(x instanceof Array)) {
       return x;
     } else if (x[0] === 'if') {
