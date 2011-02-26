@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>Lisp.js REPL</title>
+    <script type="text/javascript" src="./js/jquery.js"></script>
+    <script type="text/javascript" src="../src/jp/yuyat/Lisp.js"></script>
+    <script type="text/javascript">
+    var editor = (function () {
+      var query = '#editor', get, clear, focus;
+
+      get = function () {
+        return jQuery(query).val();
+      };
+
+      clear = function () {
+        jQuery(query).val('');
+      };
+
+      focus = function () {
+        jQuery(query).focus();
+      };
+
+      return {
+        get : get,
+        clear : clear,
+        focus : focus
+      };
+    })();
+
+    var console = (function () {
+      var puts;
+
+      puts = function (str) {
+        if (typeof str === 'undefined') {
+          return;
+        }
+        if (typeof str === 'string') {
+          str = str.replace(/ /g, '&nbsp;').replace(/\r\n|\r|\n/g, '<br />');
+        }
+        jQuery('#console').append(str + '<br />');
+      };
+
+      return {
+        puts : puts
+      };
+    })();
+
+    jQuery(document).ready(function () {
+      var Lisp = jp.yuyat.Lisp;
+
+      $('#exec').click(function () {
+        var code = editor.get();
+        console.puts(code);
+        try {
+         var result = Lisp.eval(Lisp.parse(code));
+         console.puts(result);
+        } catch (e) {
+          console.puts(e.name + ': ' + e.message);
+        }
+        editor.clear();
+        editor.focus();
+      });
+    });
+    </script>
+    <style type="text/css">
+    #console {
+      size: 11px;
+      font-family: monospace !important;
+    }
+    </style>
+</head>
+<body>
+<h1>Lisp.js REPL</h1>
+<textarea id="editor" rows="8" cols="120"></textarea><input type="button" id="exec" value="exec" />
+<div id="console"></div>
+</body>
+</html>
