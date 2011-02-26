@@ -46,16 +46,16 @@ testcase.test('Lisp.Env.find should returns null if the key starts with "__".', 
   a.is_null(env.find('__outer__'));
 });
 
-testcase.test('(define var exp)', function (a) {
+testcase.test('Lisp.eval define', function (a) {
   var env = new Lisp.Env;
-  Lisp.eval(Lisp.parse('(define foo bar)'), env);
+  Lisp.eval(['define', 'foo', 'bar'], env);
 
   a.equals('bar', env['foo']);
 });
 
-testcase.test('(begin (exp) (exp))', function (a) {
+testcase.test('Lisp.eval begin', function (a) {
   var env = new Lisp.Env;
-  Lisp.eval(Lisp.parse('(begin (define foo bar) (define hoge fuga))'), env);
+  Lisp.eval(['begin', ['define', 'foo', 'bar'], ['define', 'hoge', 'fuga']], env);
 
   a.equals('bar',  env['foo']);
   a.equals('fuga', env['hoge']);
