@@ -52,9 +52,15 @@
       };
 
       p = function (data) {
-        if (typeof data !== 'undefined') {
-          jQuery(query).append('<div class="console p">' + _p(data) + '</div>');
+        var type = typeof data, str;
+        if (type === 'undefined') {
+          return;
+        } else if (type === 'function') {
+          str = '[lambda]';
+        } else {
+          str = _p(data);
         }
+        jQuery(query).append('<div class="console p">' + str + '</div>');
       };
 
       _format = function (str) {
@@ -81,7 +87,7 @@
     })();
 
     var debug = (function () {
-      var query = '#debug', flush, _dump, _indent;
+      var query = '#debug', flush, _dump, _indent, _array_to_lisp;
 
       flush = function (env) {
         var dump = _dump(env);
@@ -122,11 +128,25 @@
         } else if (typeof env === 'string') {
           result = "'" + env + "'";
         } else if (env instanceof Function) {
-          result = '[lambda]';
+          if (env.hasOwnProperty('exp')) {
+            result = _array_to_lisp(['lambda', env.args, env.exp]);
+          } else {
+            result = '[JS lambda]';
+          }
         } else {
           result = env;
         }
         return result;
+      };
+
+      _array_to_lisp = function (arr) {
+        if (arr instanceof Array) {
+          return '(' + jQuery.map(arr, function (v, k) {
+            return _array_to_lisp(v);
+          }).join(' ') + ')';
+        } else {
+          return arr;
+        }
       };
 
       return {

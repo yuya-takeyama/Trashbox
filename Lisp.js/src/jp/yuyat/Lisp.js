@@ -96,9 +96,12 @@ jp.yuyat.Lisp = (function () {
     } else if (x[0] === 'lambda') {
       var vars = x[1],
           exp  = x[2];
-      return function () {
+      var lambda =  function () {
         return eval(exp, new jp.yuyat.Lisp.Env(env, vars, arguments));
       };
+      lambda.exp  = exp;
+      lambda.args = vars;
+      return lambda;
     } else if (x[0] === 'begin') {
       x.shift();
       for (var key in x) {
