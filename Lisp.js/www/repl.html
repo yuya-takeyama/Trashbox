@@ -35,20 +35,102 @@
     })();
 
     var console = (function () {
-      var puts;
+      var query = '#console', puts, warn, p, _format, _p;
 
       puts = function (str) {
         if (typeof str === 'undefined') {
           return;
         }
-        if (typeof str === 'string') {
-          str = str.replace(/ /g, '&nbsp;').replace(/\r\n|\r|\n/g, '<br />');
+        jQuery(query).append('<div class="console puts">' + _format(str) + '</div>');
+      };
+
+      warn = function (str) {
+        if (typeof str === 'undefined') {
+          return;
         }
-        jQuery('#console').append(str + '<br />');
+        jQuery(query).append('<div class="console warn">' + _format(str) + '</div>');
+      };
+
+      p = function (data) {
+        if (typeof data !== 'undefined') {
+          jQuery(query).append('<div class="console p">' + _p(data) + '</div>');
+        }
+      };
+
+      _format = function (str) {
+        if (typeof str === 'string') {
+          return str.replace(/ /g, '&nbsp;').replace(/\r\n|\r|\n/g, '<br />');
+        }
+      };
+
+      _p = function (data) {
+        if (data instanceof Array) {
+          return '[' + jQuery.map(data, function (v, k) {
+            return _p(v);
+          }).join(', ') + ']';
+        } else {
+          return data;
+        }
       };
 
       return {
-        puts : puts
+        puts : puts,
+        warn : warn,
+        p : p
+      };
+    })();
+
+    var debug = (function () {
+      var query = '#debug', flush, _dump, _indent;
+
+      flush = function (env) {
+        var dump = _dump(env);
+        dump = dump.replace(/ /g, '&nbsp;').replace(/\r\n|\r|\n/g, '<br />');
+        jQuery(query).html(dump);
+      };
+
+      _indent = function (depth) {
+        var space = '', i;
+        for (i = 0; i < depth; i++) {
+          space += '  ';
+        }
+        return space;
+      };
+
+      _dump = function (env, depth) {
+        var result,
+            depth = depth || 0;
+        if (typeof env === 'object' && !(env instanceof Array)) {
+          depth++;
+          var i = 0, key;
+          result = '{\n';
+          for (key in env) {
+            if (typeof key === 'string' && key.match(/^__/)) {
+              continue;
+            }
+            if (i > 0) {
+              result += ',\n';
+            }
+            result += _indent(depth) + _dump(key) + ': ' + _dump(env[key], depth);
+            i++;
+          }
+          result += '\n}';
+        } else if (env instanceof Array) {
+          result = '[\n' + jQuery.map(env, function (v, k) {
+            return _indent(depth + 1) + _dump(v, depth + 1);
+          }).join(',\n') + '\n' + _indent(depth) + ']';
+        } else if (typeof env === 'string') {
+          result = "'" + env + "'";
+        } else if (env instanceof Function) {
+          result = '[lambda]';
+        } else {
+          result = env;
+        }
+        return result;
+      };
+
+      return {
+        flush : flush
       };
     })();
 
@@ -61,25 +143,47 @@
         var code = editor.get();
         console.puts(code);
         try {
-         var result = Lisp.eval(Lisp.parse(code));
-         console.puts(result);
+          var result = Lisp.eval(Lisp.parse(code));
+          console.p(result);
         } catch (e) {
-          console.puts(e.name + ': ' + e.message);
+          console.warn(e.name + ': ' + e.message);
         }
+        debug.flush(Lisp.global);
         editor.init();
       });
     });
     </script>
     <style type="text/css">
-    #editor, #console {
-      size: 11px;
+    #subject {
+      font-size: 150%;
+      font-weight: 900;
+      font-family: Chunkfive;
+    }
+
+    #editor, #console, #debug {
+      size: 12px;
       font-family: monospace !important;
+    }
+
+    #console, #debug {
+      width: 48%;
+      margin-left: 1%;
+      float: left;
+    }
+
+    #console .p {
+      color: #292;
+    }
+
+    #console .warn {
+      color: #f00;
     }
     </style>
 </head>
 <body>
-<h1>Lisp.js REPL</h1>
+<h1 id="subject">Lisp.js REPL</h1>
 <textarea id="editor" rows="8" cols="120"></textarea><input type="button" id="exec" value="exec" />
 <div id="console"></div>
+<div id="debug"></div>
 </body>
 </html>
