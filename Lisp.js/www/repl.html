@@ -7,7 +7,7 @@
     <script type="text/javascript" src="../src/jp/yuyat/Lisp.js"></script>
     <script type="text/javascript">
     var editor = (function () {
-      var query = '#editor', get, clear, focus;
+      var query = '#editor', get, clear, focus, init;
 
       get = function () {
         return jQuery(query).val();
@@ -21,10 +21,16 @@
         jQuery(query).focus();
       };
 
+      init = function () {
+        clear();
+        focus();
+      };
+
       return {
         get : get,
         clear : clear,
-        focus : focus
+        focus : focus,
+        init  : init
       };
     })();
 
@@ -49,6 +55,8 @@
     jQuery(document).ready(function () {
       var Lisp = jp.yuyat.Lisp;
 
+      editor.init();
+
       $('#exec').click(function () {
         var code = editor.get();
         console.puts(code);
@@ -58,13 +66,12 @@
         } catch (e) {
           console.puts(e.name + ': ' + e.message);
         }
-        editor.clear();
-        editor.focus();
+        editor.init();
       });
     });
     </script>
     <style type="text/css">
-    #console {
+    #editor, #console {
       size: 11px;
       font-family: monospace !important;
     }
